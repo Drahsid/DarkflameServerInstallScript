@@ -21,4 +21,3 @@ sudo ./install_darkflame.sh /path/to/res/folder sqlUsername databaseName path/to
 ### Additional Contributors
 DLU Team - DLU
 Lass11 - Testing
-

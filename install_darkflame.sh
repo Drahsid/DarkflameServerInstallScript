@@ -114,19 +114,19 @@ sqlite3 $serverDir/build/res/CDServer.sqlite ".read $serverDir/migrations/cdserv
 sqlite3 $serverDir/build/res/CDServer.sqlite ".read $serverDir/migrations/cdserver/2_script_component.sql"
 
 echo -e "${PURPLE}setting up configs (If your sql user has a password, make sure to edit the files and input the password after \`mysql_password=\`)${NOCOLOR}"
-sed -i 's/mysql_host=/mysql_host=localhost/g' authconfig.ini
-sed -i 's/mysql_database=/mysql_database=$databaseName/g' authconfig.ini
-sed -i 's/mysql_username=/mysql_username=$sqlUser/g' authconfig.ini
+sed -i "s/mysql_host=/mysql_host=localhost/g" authconfig.ini
+sed -i "s/mysql_database=/mysql_database=$databaseName/g" authconfig.ini
+sed -i "s/mysql_username=/mysql_username=$sqlUser/g" authconfig.ini
 
-sed -i 's/mysql_host=/mysql_host=localhost/g' chatconfig.ini
-sed -i 's/mysql_database=/mysql_database=$databaseName/g' chatconfig.ini
-sed -i 's/mysql_username=/mysql_username=$sqlUser/g' chatconfig.ini
+sed -i "s/mysql_host=/mysql_host=localhost/g" chatconfig.ini
+sed -i "s/mysql_database=/mysql_database=$databaseName/g" chatconfig.ini
+sed -i "s/mysql_username=/mysql_username=$sqlUser/g" chatconfig.ini
 
-sed -i 's/mysql_host=/mysql_host=localhost/g' masterconfig.ini
-sed -i 's/mysql_database=/mysql_database=$databaseName/g' masterconfig.ini
-sed -i 's/mysql_username=/mysql_username=$sqlUser/g' masterconfig.ini
+sed -i "s/mysql_host=/mysql_host=localhost/g" masterconfig.ini
+sed -i "s/mysql_database=/mysql_database=$databaseName/g" masterconfig.ini
+sed -i "s/mysql_username=/mysql_username=$sqlUser/g" masterconfig.ini
 
-sed -i 's/mysql_host=/mysql_host=localhost/g' worldconfig.ini
-sed -i 's/mysql_database=/mysql_database=$databaseName/g' worldconfig.ini
-sed -i 's/mysql_username=/mysql_username=$sqlUser/g' worldconfig.ini
+sed -i "s/mysql_host=/mysql_host=localhost/g" worldconfig.ini
+sed -i "s/mysql_database=/mysql_database=$databaseName/g" worldconfig.ini
+sed -i "s/mysql_username=/mysql_username=$sqlUser/g" worldconfig.ini
 
