@@ -47,23 +47,23 @@ echo -e "${PURPLE}installing required packages...${NOCOLOR}"
 apt update
 apt install gcc cmake build-essential zlib1g-dev python3 python3-pip unzip sqlite3
 # potentially problematic
-if [ apt install mysql-server mariadb-server ] ; then
+if [ apt install mariadb-server ] ; then
     echo -e "${NOCOLOR}"
 else
-    read -p 'installing mysql-server or mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mysql-server-8.0 mariadb-server-10.3 instead. [Y/n] ' -n 1 -r
+    read -p 'installing mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mariadb-server-10.3 instead. [Y/n] ' -n 1 -r
     if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
         apt clean
         apt purge 'mysql*'
         apt update
         apt install -f
-        if [ apt install mysql-server mariadb-server ] ; then
+        if [ apt install mariadb-server ] ; then
             echo -e "${NOCOLOR}"
         else
-            echo -e "${RED}failed! falling back to mysql-server-8.0 mariadb-server-10.3${NOCOLOR}"
-            apt install mysql-server-8.0 mariadb-server-10.3
+            echo -e "${RED}failed! falling back to mariadb-server-10.3${NOCOLOR}"
+            apt install mariadb-server-10.3
         fi
     else
-        apt install mysql-server-8.0 mariadb-server-10.3
+        apt install mariadb-server-10.3
     fi
 
 fi
