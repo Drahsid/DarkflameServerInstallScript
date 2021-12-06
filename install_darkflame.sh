@@ -9,7 +9,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-# $1 resource dir $2 sql user $3 database name $4 server dir
+# $1 resource dir $2 sql user $3 database name $4 server dir $5 build dir
 
 if [ -z $1 ] ; then
     echo -e "${RED}ERROR! YOU MUST PROVIDE THE RESOURCE DIRECTORY AS THE FIRST ARGUMENT!${NOCOLOR}"
@@ -71,8 +71,13 @@ fi
 echo -e "${PURPLE}setting up mysql...${NOCOLOR}"
 mysql_secure_installation
 
-echo -e "${PURPLE}cloning repository...${NOCOLOR}"
-git clone https://github.com/DarkflameUniverse/DarkflameServer.git --recursive $serverDir
+if [ -z $5 ]
+    echo -e "${PURPLE}cloning repository...${NOCOLOR}"
+    git clone https://github.com/DarkflameUniverse/DarkflameServer.git --recursive $serverDir
+else
+    echo -e "${PURPLE}copying prebuilt server files to $serverDir${NOCOLOR}"
+    cp -r $5 $serverDir
+fi
 
 cd $serverDir
 mkdir build
