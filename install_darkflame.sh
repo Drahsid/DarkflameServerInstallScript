@@ -114,10 +114,10 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 if [ $usingBuildDir -eq "0" ]; then
-    echo -e "${PURPLE}using prebuilt server files to $buildDir${NOCOLOR}"
-else
     echo -e "${PURPLE}cloning repository...${NOCOLOR}"
     git clone https://github.com/DarkflameUniverse/DarkflameServer.git --recursive $serverDir
+else
+    echo -e "${PURPLE}using server build files $buildDir${NOCOLOR}"
 fi
 
 cd $serverDir
