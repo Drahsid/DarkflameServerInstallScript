@@ -1,3 +1,10 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+    echo "This script must be run as root!"
+    exit 1
+fi
+
 # $1 resource dir $2 sql user $3 database name $4 server dir
 
 if [ -z $1 ] then
