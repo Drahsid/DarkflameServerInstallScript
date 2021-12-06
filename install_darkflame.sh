@@ -94,14 +94,16 @@ mysql -u $sqlUser -e "create database $databaseName";
 mariadb $databaseName < $serverDir/migrations/dlu/0_initial.sql;
 
 echo -e "${PURPLE}setting up resource folder${NOCOLOR}"
-ln -s $resDir $serverDir/build/res
+rm -rf $serverDir/build/
+ln -s $resDir $serverDir/build/
 
 echo -e "${PURPLE}setting up navmeshes${NOCOLOR}"
 mkdir $serverDir/build/res/maps/navmeshes
 unzip $serverDir/resources/navmeshes.zip -d $serverDir/build/res/maps/navmeshes
 
 echo -e "${PURPLE}setting up locale${NOCOLOR}"
-ln -s $serverDir/build/res/locale $serverDir/build/locale
+rm -rf $serverDir/build/locale
+ln -s $serverDir/build/res/locale $serverDir/build/
 
 echo -e "${PURPLE}setting up CDServer.sqlite${NOCOLOR}"
 git clone https://github.com/lcdr/utils.git $serverDir/lcdrutils
