@@ -40,12 +40,12 @@ echo using server dir $serverDir
 
 echo installing required packages...
 apt update
-apt install gcc cmake build-essential zlib1g-dev python3 python3-pip3 unzip sqlite3
+apt install gcc cmake build-essential zlib1g-dev python3 python3-pip unzip sqlite3
 # potentially problematic
 if [ apt install mysql-server mariadb-server ] ; then
     echo .
 else
-    read -p 'installing mysql-server or mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mysql-server-8.0 mariadb-server-10.3 instead. [Y/n]' -n 1 -r
+    read -p 'installing mysql-server or mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mysql-server-8.0 mariadb-server-10.3 instead. [Y/n] ' -n 1 -r
     if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
         apt clean
         apt purge 'mysql*'
@@ -99,7 +99,7 @@ sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/0_nt_footrac
 sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/1_fix_overbuild_mission.sql"
 sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/2_script_component.sql"
 
-echo setting up configs (If your sql user has a password, make sure to edit the files and input the password after `mysql_password=`)
+echo "setting up configs (If your sql user has a password, make sure to edit the files and input the password after \`mysql_password=\`)"
 sed -i 's/mysql_host=/mysql_host=localhost/g' authconfig.ini
 sed -i 's/mysql_database=/mysql_database=$databaseName/g' authconfig.ini
 sed -i 's/mysql_username=/mysql_username=$sqlUser/g' authconfig.ini
