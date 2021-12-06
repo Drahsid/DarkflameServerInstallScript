@@ -99,8 +99,7 @@ mkdir ./res/maps/navmeshes
 unzip ../resources/navmeshes.zip -d ./res/maps/navmeshes
 
 echo -e "${PURPLE}setting up locale${NOCOLOR}"
-mkdir locale
-ln -s ./res/locale/locale.xml ./locale/locale.xml
+ln -s ./res/locale ./locale
 
 echo -e "${PURPLE}setting up CDServer.sqlite${NOCOLOR}"
 git clone https://github.com/lcdr/utils.git
