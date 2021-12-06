@@ -1,50 +1,54 @@
 #!/bin/bash
 
+RED='\033[0;31m'
+PURPLE='\033[0;35m'
+NOCOLOR='\033[0m'
+
 if [[ $EUID -ne 0 ]]; then
-    echo "This script must be run as root!"
+    echo "${RED}This script must be run as root!${NOCOLOR}"
     exit 1
 fi
 
 # $1 resource dir $2 sql user $3 database name $4 server dir
 
 if [ -z $1 ] ; then
-    echo ERROR! YOU MUST PROVIDE THE RESOURCE DIRECTORY AS THE FIRST ARGUMENT!
+    echo "${RED}ERROR! YOU MUST PROVIDE THE RESOURCE DIRECTORY AS THE FIRST ARGUMENT!${NOCOLOR}"
     exit 1
 fi
-resDir=realpath $1
-echo using resource dir $resDir
+resDir=$(realpath $1)
+echo "${PURPLE}using resource dir $resDir${NOCOLOR}"
 
 if [ -z $2 ] ; then
-    echo no sql user defined, using root
+    echo "${RED}no sql user defined, using root${NOCOLOR}"
     sqlUser=root
 else
     sqlUser=$2
 fi
-echo using sql user $2
+echo "${PURPLE}using sql user $2${NOCOLOR}"
 
 if [ -z $3 ] ; then
-    echo no database name defined, using dlu
+    echo "${RED}no database name defined, using dlu${NOCOLOR}"
     databaseName=dlu
 else
     databaseName=$3
 fi
-echo using database name $databaseName
+echo "${PURPLE}using database name $databaseName${NOCOLOR}"
 
 if [ -z $4 ] ; then
-    echo no server dir defined, using .
     serverDir=.
+    echo "${RED}no server dir defined, using $serverDir${NOCOLOR}"
 else
     serverDir=$4
 fi
-serverDir=realpath $serverDir
-echo using server dir $serverDir
+serverDir=$(realpath $serverDir)
+echo "${PURPLE}using server dir $serverDir${NOCOLOR}"
 
-echo installing required packages...
+echo "${PURPLE}installing required packages...${NOCOLOR}"
 apt update
 apt install gcc cmake build-essential zlib1g-dev python3 python3-pip unzip sqlite3
 # potentially problematic
 if [ apt install mysql-server mariadb-server ] ; then
-    echo .
+    echo "${NOCOLOR}"
 else
     read -p 'installing mysql-server or mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mysql-server-8.0 mariadb-server-10.3 instead. [Y/n] ' -n 1 -r
     if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
@@ -53,9 +57,9 @@ else
         apt update
         apt install -f
         if apt install mysql-server mariadb-server ; then
-        echo .
+        echo "${NOCOLOR}"
         else
-            echo failed! falling back to mysql-server-8.0 mariadb-server-10.3
+            echo "${RED}failed! falling back to mysql-server-8.0 mariadb-server-10.3${NOCOLOR}"
             apt install mysql-server-8.0 mariadb-server-10.3
         fi
     else
@@ -64,35 +68,35 @@ else
 
 fi
 
-echo setting up mysql...
+echo "${PURPLE}setting up mysql...${NOCOLOR}"
 mysql_secure_installation
 
-echo cloning repository...
+echo "${PURPLE}cloning repository...${NOCOLOR}"
 git clone https://github.com/DarkflameUniverse/DarkflameServer.git --recursive $serverDir
 
 cd $serverDir
 mkdir build
 cd build
 
-echo building server...
+echo "${PURPLE}building server...${NOCOLOR}"
 cmake ..  && make -j4
 
-echo setting up mysql database
+echo "${PURPLE}setting up mysql database${NOCOLOR}"
 mysql -u $sqlUser -e "create database $databaseName";
 mariadb $databaseName < $serverDir/migrations/dlu/0_initial.sql;
 
-echo setting up resource folder
+echo "${PURPLE}setting up resource folder${NOCOLOR}"
 ln -s $resDir .
 
-echo setting up navmeshes
+echo "${PURPLE}setting up navmeshes${NOCOLOR}"
 mkdir ./res/maps/navmeshes
 unzip ../resources/navmeshes.zip -d ./res/maps/navmeshes
 
-echo setting up locale
+echo "${PURPLE}setting up locale${NOCOLOR}"
 mkdir locale
 ln -s ./res/locale/locale.xml ./locale/locale.xml
 
-echo setting up CDServer.sqlite
+echo "${PURPLE}setting up CDServer.sqlite${NOCOLOR}"
 git clone https://github.com/lcdr/utils
 python3 ./utils/fdb_to_sqlite.py ./res/cdclient.fdb --sqlite_path ./res/CDServer.sqlite
 
@@ -100,7 +104,7 @@ sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/0_nt_footrac
 sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/1_fix_overbuild_mission.sql"
 sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/2_script_component.sql"
 
-echo "setting up configs (If your sql user has a password, make sure to edit the files and input the password after \`mysql_password=\`)"
+echo "${PURPLE}setting up configs (If your sql user has a password, make sure to edit the files and input the password after \`mysql_password=\`)${NOCOLOR}"
 sed -i 's/mysql_host=/mysql_host=localhost/g' authconfig.ini
 sed -i 's/mysql_database=/mysql_database=$databaseName/g' authconfig.ini
 sed -i 's/mysql_username=/mysql_username=$sqlUser/g' authconfig.ini
