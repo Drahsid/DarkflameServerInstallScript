@@ -104,7 +104,7 @@ ln -s ./res/locale ./locale
 
 echo -e "${PURPLE}setting up CDServer.sqlite${NOCOLOR}"
 git clone https://github.com/lcdr/utils.git
-python3 ./utils/fdb_to_sqlite.py ./res/cdclient.fdb --sqlite_path ./res/CDServer.sqlite
+python3 ./utils/utils/fdb_to_sqlite.py ./res/cdclient.fdb --sqlite_path ./res/CDServer.sqlite
 
 sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/0_nt_footrace.sql"
 sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/1_fix_overbuild_mission.sql"
