@@ -94,7 +94,7 @@ mysql -u $sqlUser -e "create database $databaseName";
 mariadb $databaseName < $serverDir/migrations/dlu/0_initial.sql;
 
 echo -e "${PURPLE}setting up resource folder${NOCOLOR}"
-rm -rf $serverDir/build/
+rm -rf $serverDir/build/res
 ln -s $resDir $serverDir/build/
 
 echo -e "${PURPLE}setting up navmeshes${NOCOLOR}"
