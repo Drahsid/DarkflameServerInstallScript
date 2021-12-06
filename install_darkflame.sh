@@ -133,24 +133,24 @@ mysql -u $sqlUser -e "create database $databaseName";
 mariadb $databaseName < $serverDir/migrations/dlu/0_initial.sql;
 
 echo -e "${PURPLE}setting up resource folder${NOCOLOR}"
-rm -rf $serverDir/build/res
-ln -s $resDir $serverDir/build/
+rm -rf $buildDir/res
+ln -s $resDir $buildDir/
 
 echo -e "${PURPLE}setting up navmeshes${NOCOLOR}"
-mkdir $serverDir/build/res/maps/navmeshes
-unzip $serverDir/resources/navmeshes.zip -d $serverDir/build/res/maps/navmeshes
+mkdir $buildDir/res/maps/navmeshes
+unzip $serverDir/resources/navmeshes.zip -d $buildDir/res/maps/navmeshes
 
 echo -e "${PURPLE}setting up locale${NOCOLOR}"
-rm -rf $serverDir/build/locale
-ln -s $serverDir/build/res/locale $serverDir/build/
+rm -rf $buildDir/locale
+ln -s $buildDir/res/locale $buildDir/
 
 echo -e "${PURPLE}setting up CDServer.sqlite${NOCOLOR}"
 git clone https://github.com/lcdr/utils.git $serverDir/lcdrutils
-python3 $serverDir/lcdrutils/utils/fdb_to_sqlite.py $serverDir/build/res/cdclient.fdb --sqlite_path $serverDir/build/res/CDServer.sqlite
+python3 $serverDir/lcdrutils/utils/fdb_to_sqlite.py $buildDir/res/cdclient.fdb --sqlite_path $buildDir/res/CDServer.sqlite
 
-sqlite3 $serverDir/build/res/CDServer.sqlite ".read $serverDir/migrations/cdserver/0_nt_footrace.sql"
-sqlite3 $serverDir/build/res/CDServer.sqlite ".read $serverDir/migrations/cdserver/1_fix_overbuild_mission.sql"
-sqlite3 $serverDir/build/res/CDServer.sqlite ".read $serverDir/migrations/cdserver/2_script_component.sql"
+sqlite3 $buildDir/res/CDServer.sqlite ".read $serverDir/migrations/cdserver/0_nt_footrace.sql"
+sqlite3 $buildDir/res/CDServer.sqlite ".read $serverDir/migrations/cdserver/1_fix_overbuild_mission.sql"
+sqlite3 $buildDir/res/CDServer.sqlite ".read $serverDir/migrations/cdserver/2_script_component.sql"
 
 echo -e "${PURPLE}setting up configs (If your sql user has a password, make sure to edit the files and input the password after \`mysql_password=\`)${NOCOLOR}"
 sed -i "s/mysql_host=/mysql_host=localhost/g" authconfig.ini
