@@ -54,6 +54,7 @@ else
     if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
         apt clean
         apt purge 'mysql*'
+        apt purge 'mariadb*'
         apt update
         apt install -f
         if [ apt install mariadb-server ] ; then
