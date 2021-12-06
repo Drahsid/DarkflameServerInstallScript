@@ -89,6 +89,7 @@ echo -e "${PURPLE}building server...${NOCOLOR}"
 cmake ..  && make -j4
 
 echo -e "${PURPLE}setting up mysql database${NOCOLOR}"
+mysql -u $sqlUser -e "drop database $databaseName";
 mysql -u $sqlUser -e "create database $databaseName";
 mariadb $databaseName < $serverDir/migrations/dlu/0_initial.sql;
 

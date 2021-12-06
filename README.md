@@ -18,3 +18,7 @@ Note that you can provide additional arguments for further control of the instal
 sudo ./install_darkflame.sh /path/to/res/folder sqlUsername databaseName path/to/install/server
 ```
 
+### Additional Contributors
+DLU Team - DLU
+Lass11 - Testing
+
