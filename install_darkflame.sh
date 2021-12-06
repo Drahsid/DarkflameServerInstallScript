@@ -56,8 +56,8 @@ else
         apt purge 'mysql*'
         apt update
         apt install -f
-        if apt install mysql-server mariadb-server ; then
-        echo -e "${NOCOLOR}"
+        if [ apt install mysql-server mariadb-server ] ; then
+            echo -e "${NOCOLOR}"
         else
             echo -e "${RED}failed! falling back to mysql-server-8.0 mariadb-server-10.3${NOCOLOR}"
             apt install mysql-server-8.0 mariadb-server-10.3
@@ -102,7 +102,7 @@ mkdir locale
 ln -s ./res/locale/locale.xml ./locale/locale.xml
 
 echo -e "${PURPLE}setting up CDServer.sqlite${NOCOLOR}"
-git clone https://github.com/lcdr/utils
+git clone https://github.com/lcdr/utils.git
 python3 ./utils/fdb_to_sqlite.py ./res/cdclient.fdb --sqlite_path ./res/CDServer.sqlite
 
 sqlite3 ./res/CDServer.sqlite ".read $serverDir/migrations/cdserver/0_nt_footrace.sql"
