@@ -40,9 +40,10 @@ echo using server dir $serverDir
 
 echo installing required packages...
 apt update
-apt install gcc cmake build-essential zlib1g-dev python3 pip3 unzip
+apt install gcc cmake build-essential zlib1g-dev python3 python3-pip3 unzip
 # potentially problematic
 if apt install mysql-server mariadb-server ; then
+    echo OK!
 else
     read -p 'installing mysql-server or mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mysql-server-8.0 mariadb-server-10.3 instead. [Y/n]' -n 1 -r
     if [[ ! $REPLY =~ ^[Yy]$ ]] then
