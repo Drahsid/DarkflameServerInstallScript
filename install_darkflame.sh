@@ -11,7 +11,7 @@ if [ -z $1 ] ; then
     echo ERROR! YOU MUST PROVIDE THE RESOURCE DIRECTORY AS THE FIRST ARGUMENT!
     exit 1
 fi
-resDir=$1
+resDir=realpath $1
 echo using resource dir $resDir
 
 if [ -z $2 ] ; then
@@ -36,6 +36,7 @@ if [ -z $4 ] ; then
 else
     serverDir=$4
 fi
+serverDir=realpath $serverDir
 echo using server dir $serverDir
 
 echo installing required packages...
