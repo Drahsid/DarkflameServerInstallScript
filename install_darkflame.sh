@@ -72,7 +72,7 @@ fi
 echo -e "${PURPLE}setting up mysql...${NOCOLOR}"
 mysql_secure_installation
 
-if [ -z $5 ]
+if [ -z $5 ] ; then
     echo -e "${PURPLE}cloning repository...${NOCOLOR}"
     git clone https://github.com/DarkflameUniverse/DarkflameServer.git --recursive $serverDir
 else
