@@ -11,79 +11,118 @@ fi
 
 # $1 resource dir $2 sql user $3 database name $4 server dir $5 build dir
 
-if [ -z $1 ] ; then
-    echo -e "${RED}ERROR! YOU MUST PROVIDE THE RESOURCE DIRECTORY AS THE FIRST ARGUMENT!${NOCOLOR}"
-    exit 1
+if [ -z $1 ]; then
+    read -p 'please input the path to the res folder: ' -n 1 -r
+    resDir=$(realpath $REPLY)
+    if [ -z $resDir ]; then
+        echo -e "${RED}ERROR! YOU MUST PROVIDE THE RESOURCE DIRECTORY!${NOCOLOR}"
+        exit 1
+    fi
 fi
 resDir=$(realpath $1)
 echo -e "${PURPLE}using resource dir $resDir${NOCOLOR}"
 
-if [ -z $2 ] ; then
-    echo -e "${RED}no sql user defined, using root${NOCOLOR}"
-    sqlUser=root
+if [ -z $2 ]; then
+    read -p 'sql user not provided, would you like to provide one? if no, default will be root. make sure this user exists! [y/n] ' -n 1 -r
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        read -p 'input sql username now: ' -n 1 -r
+        sqlUser=$REPLY
+    else
+        echo -e "${RED}no sql user defined, using root${NOCOLOR}"
+        sqlUser=root
+    fi
 else
     sqlUser=$2
 fi
 echo -e "${PURPLE}using sql user $2${NOCOLOR}"
 
-if [ -z $3 ] ; then
-    echo -e "${RED}no database name defined, using dlu${NOCOLOR}"
-    databaseName=dlu
+if [ -z $3 ]; then
+    read -p 'database name not provided, would you like to provdie one? if no, default will be dlu [y/n] ' -n 1 -r
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        read -p 'input database name now: ' -n 1 -r
+        databaseName=$REPLY
+    else
+        echo -e "${RED}no database name defined, using dlu${NOCOLOR}"
+        databaseName=dlu
+    fi
 else
     databaseName=$3
 fi
 echo -e "${PURPLE}using database name $databaseName${NOCOLOR}"
 
-if [ -z $4 ] ; then
-    serverDir=.
-    echo -e "${RED}no server dir defined, using $serverDir${NOCOLOR}"
+if [ -z $4 ]; then
+    read -p 'server files dir not provided, would you like to provide one? if no, default will be . [y/n] ' -n 1 -r
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        read -p 'input server files dir: ' -n 1 -r
+        serverDir = $(realpath $REPLY)
+    else
+        serverDir=$(realpath .)
+        echo -e "${RED}no server dir defined, using ${serverDir}${NOCOLOR}"
+    fi
 else
-    serverDir=$4
+    serverDir=$(realpath $4)
 fi
 serverDir=$(realpath $serverDir)
 echo -e "${PURPLE}using server dir $serverDir${NOCOLOR}"
 
+usingBuildDir=0
+if [ -z $5 ]; then
+    read -p 'if you have already built the server files, put the path to them here (otherwise leave this blank): '
+    if [ -z $REPLY ]; then
+        buildDir=$serverDir/build
+    else
+        buildDir=$REPLY
+        usingBuildDir=1
+    fi
+else
+    buildDir=$5
+    usingBuildDir=1
+fi
+echo -e "${PURPLE}using build dir $buildDir${NOCOLOR}"
+
 echo -e "${PURPLE}installing required packages...${NOCOLOR}"
 apt update
 apt install gcc cmake build-essential zlib1g-dev python3 python3-pip unzip sqlite3
-# potentially problematic
-if [ apt install mariadb-server ] ; then
-    echo -e "${NOCOLOR}"
-else
-    read -p 'installing mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mariadb-server-10.3 instead. [Y/n] ' -n 1 -r
-    if [[ ! $REPLY =~ ^[Yy]$ ]] ; then
-        apt clean
-        apt purge 'mysql*'
-        apt purge 'mariadb*'
-        apt update
-        apt install -f
-        if [ apt install mariadb-server ] ; then
-            echo -e "${NOCOLOR}"
+
+read -p 'do you want to install mysql and mariadb? (you can choose N if you have already installed these!) [y/n] ' -n 1 -r
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    # potentially problematic
+    if [ apt install mariadb-server ]; then
+        echo -e "${NOCOLOR}"
+    else
+        read -p 'installing mariadb-server failed, would you like CLEAN install them? (may be dangerous if you already have either set up and in-use.) If you select no, we will install mariadb-server-10.3 instead. [y/n] ' -n 1 -r
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            apt clean
+            apt purge 'mysql*'
+            apt purge 'mariadb*'
+            apt update
+            apt install -f
+            if [ apt install mariadb-server ]; then
+                echo -e "${NOCOLOR}"
+            else
+                echo -e "${RED}failed! falling back to mariadb-server-10.3${NOCOLOR}"
+                apt install mariadb-server-10.3
+            fi
         else
-            echo -e "${RED}failed! falling back to mariadb-server-10.3${NOCOLOR}"
             apt install mariadb-server-10.3
         fi
-    else
-        apt install mariadb-server-10.3
     fi
 
+    echo -e "${PURPLE}setting up mysql...${NOCOLOR}"
+    service mysql start
+    mysql_secure_installation
 fi
 
-echo -e "${PURPLE}setting up mysql...${NOCOLOR}"
-service mysql start
-mysql_secure_installation
-
-if [ -z $5 ] ; then
+if [ $usingBuildDir -eq "0" ]; then
+    echo -e "${PURPLE}using prebuilt server files to $buildDir${NOCOLOR}"
+else
     echo -e "${PURPLE}cloning repository...${NOCOLOR}"
     git clone https://github.com/DarkflameUniverse/DarkflameServer.git --recursive $serverDir
-else
-    echo -e "${PURPLE}copying prebuilt server files to $serverDir${NOCOLOR}"
-    cp -r $5 $serverDir
 fi
 
 cd $serverDir
-mkdir build
-cd build
+mkdir -p $buildDir
+cd $buildDir
 
 echo -e "${PURPLE}building server...${NOCOLOR}"
 cmake ..  && make -j4
