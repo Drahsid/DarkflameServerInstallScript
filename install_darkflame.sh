@@ -138,7 +138,7 @@ ln -s $resDir $buildDir/
 
 echo -e "${PURPLE}setting up navmeshes${NOCOLOR}"
 mkdir $buildDir/res/maps/navmeshes
-unzip $serverDir/resources/navmeshes.zip -d $buildDir/res/maps/navmeshes
+unzip $serverDir/resources/navmeshes.zip -d $buildDir/res/maps
 
 echo -e "${PURPLE}setting up locale${NOCOLOR}"
 rm -rf $buildDir/locale
