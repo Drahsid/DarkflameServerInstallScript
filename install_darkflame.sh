@@ -7,14 +7,14 @@ fi
 
 # $1 resource dir $2 sql user $3 database name $4 server dir
 
-if [ -z $1 ] then
+if [ -z $1 ] ; then
     echo ERROR! YOU MUST PROVIDE THE RESOURCE DIRECTORY AS THE FIRST ARGUMENT!
     exit 1
 fi
 resDir=$1
 echo using resource dir $resDir
 
-if [ -z $2 ] then
+if [ -z $2 ] ; then
     echo no sql user defined, using root
     sqlUser=root
 else
@@ -22,7 +22,7 @@ else
 fi
 echo using sql user $2
 
-if [ -z $3 ] then
+if [ -z $3 ] ; then
     echo no database name defined, using dlu
     databaseName=dlu
 else
@@ -30,7 +30,7 @@ else
 fi
 echo using database name $databaseName
 
-if [ -z $4 ] then
+if [ -z $4 ] ; then
     echo no server dir defined, using .
     serverDir=.
 else
