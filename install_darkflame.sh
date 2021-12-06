@@ -70,6 +70,7 @@ else
 fi
 
 echo -e "${PURPLE}setting up mysql...${NOCOLOR}"
+service mysql start
 mysql_secure_installation
 
 if [ -z $5 ] ; then
